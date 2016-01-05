@@ -1,4 +1,5 @@
 import {createStore} from 'dummy/tests/helpers/store';
+import isEnabled from 'ember-data/-private/features';
 import Ember from 'ember';
 
 import {module, test} from 'qunit';
@@ -73,3 +74,32 @@ test('recordArray.replace() throws error', function(assert) {
     recordArray.replace();
   }, Error("The result of a server query (on (subclass of DS.Model)) is immutable."), 'throws error');
 });
+
+if (isEnabled('ds-better-adapter-populated-record-array-error-messages')) {
+  test('array mutation methods throw an error and instead suggest to use toArray', function(assert) {
+    let recordArray = store.recordArrayManager
+      .createAdapterPopulatedRecordArray(Person, null);
+
+    const MUTATION_METHODS = [
+      'addObject',
+      'addObjects',
+      'removeObject',
+      'removeObjects',
+      'unshiftObject',
+      'unshiftObjects',
+      'pushObject',
+      'pushObjects',
+      'reverseObjects',
+      'setObjects',
+      'shiftObject'
+    ];
+
+    MUTATION_METHODS.forEach((method) => {
+      assert.throws(() => {
+        recordArray[method]();
+      }, Error("The result of a server query (on (subclass of DS.Model)) is immutable. Use .toArray() to copy the array instead."), 'throws error');
+    });
+
+  });
+}
+

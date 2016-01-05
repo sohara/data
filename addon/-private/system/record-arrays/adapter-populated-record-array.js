@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import RecordArray from "ember-data/-private/system/record-arrays/record-array";
+import ImmutableArrayMixin from "ember-data/-private/system/record-arrays/immutable-array-mixin";
 import cloneNull from "ember-data/-private/system/clone-null";
 
 /**
@@ -18,7 +19,7 @@ var get = Ember.get;
   @namespace DS
   @extends DS.RecordArray
 */
-export default RecordArray.extend({
+export default RecordArray.extend(ImmutableArrayMixin, {
   query: null,
 
   replace() {
