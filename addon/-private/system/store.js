@@ -2171,6 +2171,9 @@ function setupRelationships(store, record, data) {
       } else if (kind === 'hasMany') {
         relationship = record._relationships.get(key);
         relationship.updateRecordsFromAdapter(value);
+      } else if (kind === 'hasArray') {
+        relationship = record._relationships.get(key);
+        relationship.updateRecordsFromAdapter(value);
       }
     }
   });

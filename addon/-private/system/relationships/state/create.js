@@ -2,19 +2,24 @@ import Ember from 'ember';
 import ManyRelationship from "ember-data/-private/system/relationships/state/has-many";
 import BelongsToRelationship from "ember-data/-private/system/relationships/state/belongs-to";
 import EmptyObject from "ember-data/-private/system/empty-object";
+import ArrayRelationship from "ember-data/-private/system/relationships/state/has-array";
 
 var get = Ember.get;
 
 function createRelationshipFor(record, relationshipMeta, store) {
   var inverseKey;
-  var inverse = record.type.inverseFor(relationshipMeta.key, store);
+  if (relationshipMeta.kind !== 'hasArray') {
+    var inverse = record.type.inverseFor(relationshipMeta.key, store);
 
-  if (inverse) {
-    inverseKey = inverse.name;
+    if (inverse) {
+      inverseKey = inverse.name;
+    }
   }
 
   if (relationshipMeta.kind === 'hasMany') {
     return new ManyRelationship(store, record, inverseKey, relationshipMeta);
+  } else if (relationshipMeta.kind === 'hasArray') {
+    return new ArrayRelationship(store, record, inverseKey, relationshipMeta);
   } else {
     return new BelongsToRelationship(store, record, inverseKey, relationshipMeta);
   }
